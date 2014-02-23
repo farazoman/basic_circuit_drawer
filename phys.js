@@ -49,15 +49,16 @@ component = function(res, cur, volt, ends, type, height, width){
 
 		context.moveTo(xa, ya);
 		context.lineTo(xa+Math.floor(width/2),ya-Math.floor((height)));
-		for(var i = 2;i < 8; i++){
+		for(var i = 2;i < 9; i++){
 			if(i%2 == 0){
-	      		context.lineTo(xa+width*i,ya+height);
+	      		context.lineTo(xa+width/2*i,ya+height);
 	      		continue;
 	      	}
-      		context.lineTo(xa+width*i,ya-height);
+      		context.lineTo(xa+width/2*i,ya-height);
 	    }
-	    context.lineTo(xb,yb);
-      	context.stroke();
+	    context.lineTo(xa+9*Math.floor(width/2),ya);
+      	ends.b = new point(xa+9*Math.floor(width/2),ya)
+	    context.stroke();
 	}
 
 }
@@ -267,7 +268,7 @@ function drawLines(){
 */
 function redraw()
 {
-	var v = new component(0,0,0,new lineSet(new point(10,10), new point(75,10)), 0, 10,16);
+	var v = new component(0,0,0,new lineSet(new point(10,10), new point(75,10)), 0, 8,6);
 
 	context.save();
 	clearCanvas();
