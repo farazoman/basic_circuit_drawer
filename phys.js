@@ -27,6 +27,7 @@ var curLoadResNum = 0;
 var endX;
 var endY;
 var points = [];
+var lines = [];
 var isShiftPressed = false;
 var startX;
 var startY;
@@ -46,19 +47,29 @@ component = function(res, cur, volt, ends, type, height, width){
 		var ya = ends.a.y;
 		var xb = ends.b.x;
 		var yb = ends.b.y;
+		var start = new point(xa,ya);
+		//var ps = new lineSet(start, new point(0,0));
 
 		context.moveTo(xa, ya);
 		context.lineTo(xa+Math.floor(width/2),ya-Math.floor((height)));
 		for(var i = 2;i < 9; i++){
 			if(i%2 == 0){
 	      		context.lineTo(xa+width/2*i,ya+height);
+	      		lines.push(new lineSet(start,new point(xa+width/2*i,ya+height)));
+	      		start = new point(xa+width/2*i,ya+height);
 	      		continue;
 	      	}
       		context.lineTo(xa+width/2*i,ya-height);
+      		lines.push(new lineSet(start,new point(xa+width/2*i,ya-height)));
+	      	start = new point(xa+width/2*i,ya-height);
+	      	continue;
 	    }
 	    context.lineTo(xa+9*Math.floor(width/2),ya);
-      	ends.b = new point(xa+9*Math.floor(width/2),ya)
+
+      	ends.b = new point(xa+9*Math.floor(width/2),ya);
+      	lines.push(new lineSet(start,ends.b));
 	    context.stroke();
+	    points.push(ends);
 	}
 
 }
@@ -132,7 +143,11 @@ function prepareCanvas()
 		startX = pt.x;
 		startY = pt.y;
 		endX = startX;
-		endY = startY;	
+		endY = startY;
+		if(e.ctrlKey){
+			var v = new component(0,0,0,new lineSet(new point(startX, startY), new point(endX,endY)), 0, 8,6);
+			v.imgR();
+		}
 		
 		paint = true;
 		//addClick(mouseX, mouseY, false);
@@ -188,6 +203,7 @@ function prepareCanvas()
 			context.moveTo(startX, startY);
       		context.lineTo(endX, endY);
       		context.stroke();
+
 			
 		}
 
@@ -205,6 +221,7 @@ function prepareCanvas()
 			save.push(new point(endX,endY));
 			save.push(new point(startX,startY));
 			points.push(new lineSet(save[0],save[1]));
+			lines.push(new lineSet(save[0],save[1]));
 	  	}
 	  	redraw();
 	});
@@ -255,11 +272,12 @@ function clearCanvas()
 
 //Draws all lines from array that is in the program
 function drawLines(){
-	for(i = 0; i < points.length; i++){
-		context.moveTo(points[i].a.x, points[i].a.y);
-      	context.lineTo(points[i].b.x, points[i].b.y);
+	for(i = 0; i < lines.length; i++){
+		context.moveTo(lines[i].a.x, lines[i].a.y);
+      	context.lineTo(lines[i].b.x, lines[i].b.y);
       	context.stroke();
       	//window.print(i[0].x);
+
 	}
 }
 
@@ -268,11 +286,11 @@ function drawLines(){
 */
 function redraw()
 {
-	var v = new component(0,0,0,new lineSet(new point(10,10), new point(75,10)), 0, 8,6);
+	//var v = new component(0,0,0,new lineSet(new point(10,10), new point(75,10)), 0, 8,6);
 
 	context.save();
 	clearCanvas();
-	v.imgR();
+	//v.imgR();
 	drawLines();
   	context.beginPath();
   //context.rect(drawingAreaX, drawingAreaY, drawingAreaWidth, drawingAreaHeight);
