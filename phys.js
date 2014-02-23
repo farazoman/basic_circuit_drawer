@@ -51,7 +51,9 @@ component = function(res, cur, volt, ends, type, height, width){
 		//var ps = new lineSet(start, new point(0,0));
 
 		context.moveTo(xa, ya);
-		context.lineTo(xa+Math.floor(width/2),ya-Math.floor((height)));
+		context.lineTo(xa+Math.floor(width/2),ya-Math.floor(height));
+		lines.push(new lineSet(start,new point(xa+Math.floor(width/2),ya-Math.floor(height))));
+	    start = new point(xa+Math.floor(width/2),ya-Math.floor(height));
 		for(var i = 2;i < 9; i++){
 			if(i%2 == 0){
 	      		context.lineTo(xa+width/2*i,ya+height);
